@@ -37,11 +37,17 @@ int tun_alloc() {
     memset(&ifr, 0, sizeof(ifr));
 
     ifr.ifr_flags = IFF_TUN | IFF_NO_PI;   /* IFF_TUN or IFF_TAP, plus maybe IFF_NO_PI */
+    /* Flags: IFF_TUN   - TUN device (no Ethernet headers) 
+       *      IFF_TAP   - TAP device  
+       *
+       *      IFF_NO_PI - Do not provide packet information  
+       */ 
 
 //   if (*dev) {
      /* if a device name was specified, put it in the structure; otherwise,
       * the kernel will try to allocate the "next" device of the
       * specified type */
+//as you have commented here i don't think that we would need an if and also i can not see any dev defined before this line.
     strncpy(ifr.ifr_name, "tun0", IFNAMSIZ);
 //   }
 
@@ -108,7 +114,10 @@ int main(){
 
     printf("I'm pissed\n");
 
-    if(select(tun_fd+10,&readset, NULL, NULL, NULL) == -1){
+    if(select(tun_fd+10,&readset, NULL, NULL, NULL) == -1){//i guess here you wanted to use the timeval tv that you have defined earlier
+      //refrencing to the line : retval = select(1, &rfds, NULL, NULL, &tv); it will be like this : select(tun_fd+10,&readset, NULL, NULL, &tv) == -1
+      // i don't get the first argument. but if we reference to this :nfds is the highest-numbered file descriptor in any of the three sets, plus 1.
+      // it sould probably be one
       perror("select error");
       exit(EXIT_FAILURE);
     }
