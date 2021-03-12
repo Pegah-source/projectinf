@@ -1,18 +1,18 @@
 libs = -ljansson
 
-all: IPoverTwitter
+all: IPrelease
  
-IPoverTwitter: IPoverTwitter.o
-	cc -g -o IPoverTwitter IPoverTwitter.o -ljansson
+IPrelease: IPrelease.o
+	cc -g -o IPrelease IPrelease.o -ljansson
 
 
-encode.o: encode.c
-	cc -c -Wall -g encode.c
+decode.o: decode.c
+	cc -c -Wall -g decode.c
 
-IPoverTwitter.o: IPoverTwitter.c encode.h encode.c
-	cc -c -Wall -g IPoverTwitter.c
-	cc -c -Wall -g encode.h 
-	cc -c -Wall -g encode.c
+IPrelease.o: IPrelease.c decode.h decode.c
+	cc -c -Wall -g IPrelease.c
+	cc -c -Wall -g decode.h 
+	cc -c -Wall -g decode.c
 clean:
-	rm IPoverTwitter IPoverTwitter.o encode.o
+	rm IPrelease IPrelease.o decode.o
 

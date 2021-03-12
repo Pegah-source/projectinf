@@ -185,16 +185,11 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 						//printf("the message : %s  nextwords : %s  real one %d \n" ,message[i] ,(pointersToNext[j].nextWords)[k],k);
 					}
 				}
-				if(counter!=0){
-					char str[12];
-					sprintf(str, "%d", arrayofints[counter]);
-					decodedPacket = (char*) realloc(decodedPacket,strlen(decodedPacket)+13);
-					strcat(decodedPacket,str);
-				}else{
-					printf("%s  AND HEY \n", decodedPacket);
-					printf("%ld \n", strlen("a"));
-					printf("%ld \n", sizeof("a"));
-				}
+				
+				char str[12];
+				sprintf(str, "%d", arrayofints[counter]);
+				decodedPacket = (char*) realloc(decodedPacket,strlen(decodedPacket)+13);
+				strcat(decodedPacket,str);
 				counter++;
 			}
 		}else{
@@ -236,6 +231,7 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
         printf("Error!");
         exit(1);
     }
+	printf("\n");
 	
 	for(int i = 0; i < decodeLength; i++){
 		/*int value = arrayoffourbits[i];
@@ -260,5 +256,6 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 	}
 	printf("\n");
 	printf("%s \n",decodedPacket+1);
+	printf("%s \n",decodedPacket);
 	return (decodedPacket+1);
 }

@@ -11,7 +11,7 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
-/*
+
     FILE *rptr = fopen("test.bin", "rb");
     if (rptr == NULL){
         perror("open file error");
@@ -27,10 +27,10 @@ int main(){
     fclose(rptr);
 */
 //}
-*/
+
 int toBinary(char *c, unsigned int size){
     FILE *fptr = fopen("test.bin", "wb");
     fwrite(c, size, 1, fptr);
+	fclose(fptr);
     return 0;
-    fclose(fptr);
 }

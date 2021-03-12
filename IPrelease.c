@@ -15,6 +15,7 @@
 #include <linux/if_tun.h>
 #include "decode.c"
 #include "decode.h"
+#include "toBinary.c"
 #define LENBUF 1024
 int tun_allocAlt() {
   struct ifreq ifr;
@@ -49,13 +50,14 @@ int main(){
       exit(EXIT_FAILURE);
     }
 // New code
-    run("python3 downloadTweet.py");
+    //run("python3 downloadTweet.py");
 
 	size_t size = 2000;
 	char words[size][40];
 	next pointersToNext[size];
 	size = readfromjson(size, words, pointersToNext);
-	decodetxt();
+	char* decoded = decodetxt(size,words,pointersToNext);
+	toBinary(decoded,strlen(decoded));
 //
     FILE *rptr2;
     rptr2 = fopen("test.bin", "rb");

@@ -19,7 +19,7 @@ int main(int argc, char * argv[]){
 	
 	
 	char* recu = decodetxt(size,words,pointersToNext);
-	printf("%s",recu);
+	printf("%s \n and this is the size : %d  and size of char : %d",recu,strlen(recu), sizeof('1'));
 	
 	return 0;
 }
