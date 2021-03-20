@@ -85,7 +85,7 @@ int readfromjson(size_t size,char words[size][40],next pointersToNext[size]){
 }
 char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 	
-	FILE * fp = fopen("TweetDownload.txt", "r"); 
+	FILE * fp = fopen("message.txt", "r"); 
 	//if (fp == NULL) return 1; 
 	char c; 
 	int count = 0,countext = 0;//countext is the the number of words in the file
@@ -124,53 +124,51 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 	}*/
 	int numPacket = -1;
 	int order;
-	int counter = 0;
+	int counter = 0;//to save just what is needed
 	bool start = true;//if we are at the beggining of a message this variable is true.
 	bool decodeEnable = false;//this variable is true if we are in the right packet and we decode this packet.
 	char* decodedPacket = (char*)malloc(sizeof("a"));//this is what we return
 	memcpy(decodedPacket,"a",sizeof("a"));
-	char* lastword = (char*)malloc(40*sizeof(char));
-	int arrayofints[countext];
-	int decodeLength = 0;
-	for(int i = 0;i < countext;i++){//i_th 4-bit number to encode
+	char* lastword;//last word that we have read from the encoded file
+	int arrayofints[countext];//to keep the decoded integers
+	int decodeLength = 0;//to know how many inetegers we have decoded
+	for(int i = 0;i < countext;i++){
 		if(strchr(message[i],'/') == NULL){
-			if(decodeEnable){
-				if(start){
-					//we search in the array words
+			if(decodeEnable){//if we are in the right packet to decode
+				if(start){//being at the beggining of a message => we search in the array words
 					int j = 0;
-					while(j < size && strcmp(message[0],words[j])!=0){
+					while(j < size && strcmp(message[i],words[j])!=0){
 						j++;
 					}
+					lastword = (char*)malloc(strlen(words[j])*sizeof(char));
 					memcpy(lastword,words[j],strlen(words[j]));
 					//now we know that this j is actually the value of the binary number
 					arrayofints[counter] = j;
 					decodeLength++;
 					//printf("the real one %d \n" , j);
-					start = false;
+					start = false;//we are no more at the beggining of a message
 				}else{
 					//here we have two cases : 1.the last word is actually in the list
 					//the last word was not on the list
 					//in the first case we look at its next words array
 					//in the second case we look at the array words
-					
 					int j = 0;
 					while(j < size && strcmp(lastword,words[j])!=0){//size is the size of the library
 						j++;
 					}
 					
-					if(j == size){
-						//it means that we have not found the last word in the words and hence :
+					if(j == size){//it means that we have not found the last word in the words and hence :
 						int k = 0;
 						while(k < size && strcmp(message[i],words[k])!=0){//size is the size of the library
 							k++;
 						}
 						free(lastword);
-						lastword = (char*)malloc(40*sizeof(char));
+						lastword = (char*)malloc(strlen(words[k])*sizeof(char));
 						memcpy(lastword,words[k],strlen(words[k]));
 						arrayofints[counter] = k;
 						decodeLength++;
 						//printf("real one : %d \n" , k);
-					}else{
+					}else{//the last word is actually in the words array
 						//printf("lastword is %s message[i] is %s words[j] is %s\n", lastword, message[i],words[j]);
 						//we need to look the list of its nextwords
 						int k = 0;
@@ -178,7 +176,7 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 							k++;
 						}
 						free(lastword);
-						lastword = (char*)malloc(40*sizeof(char));
+						lastword = (char*)malloc(strlen(message[i])*sizeof(char));
 						memcpy(lastword,message[i],strlen(message[i]));
 						arrayofints[counter] = k;
 						decodeLength++;
@@ -193,12 +191,13 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 				counter++;
 			}
 		}else{
-			if(numPacket == -1){
+			if(numPacket == -1){//the very first packet we read
 				char* slash = strchr(message[i],'/');// slash points to the slash position. numPacket/order
 				*(slash) = '\0';
 				slash = slash+1;
 				order = atoi(slash);
 				numPacket = atoi(message[i]);
+				decodeEnable = true;
 			}else{
 				char* slash = strchr(message[i],'/');// slash points to the slash position. numPacket/order
 				*(slash) = '\0';
@@ -256,6 +255,6 @@ char* decodetxt(size_t size,char words[size][40],next pointersToNext[size]){
 	}
 	printf("\n");
 	printf("%s \n",decodedPacket+1);
-	printf("%s \n",decodedPacket);
+	//printf("%s \n",decodedPacket);
 	return (decodedPacket+1);
 }
